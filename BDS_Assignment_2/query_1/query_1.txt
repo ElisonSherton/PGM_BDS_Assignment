@@ -1,0 +1,29 @@
+# Create a table with Hive
+
+create table test.retail
+(
+record_id int,
+invoice int,
+stockcode string,
+description string,
+quantity int,
+invoicedate string,
+price float,
+customerid int,
+country string
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' STORED AS TEXTFILE;
+
+# Load data from a database into the table
+load data local inpath '/home/vinayak/Desktop/PGM_BDS_Assignment/BDS_Assignment_2/data/assignment2_retail_data_utf8.csv' into table test.retail;
+
+# Execute the query
+SELECT COUNT(DISTINCT(customerid)) from test.retail WHERE country="Germany";
+
+# Save the data
+INSERT OVERWRITE DIRECTORY "/hdfs_output/hive_queries_result/" ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT DISTINCT customerid FROM test.retail;
+
+# Miscellaneous
+# Important info -> When hive doesn't start
+https://sparkbyexamples.com/apache-hive/hive-hiveexception-runtimeexception-unable-to-instantiate-sessionhivemetastoreclient/
+rm   metastore_db/*.lck
